@@ -45,7 +45,6 @@ body{
 img{
     max-width: 80%;
     height: min-content;
-    max-height: 100%;
     align-self: center;
     font-size: 4em;
 }
