@@ -1,4 +1,4 @@
-let lastThree=[]
+let lastN=[]
 
 let parent = document.getElementById('myApp')
 
@@ -79,7 +79,7 @@ const words = [
 
 class Field extends React.Component {
     render() {
-        return <span className="field" onDragOver={this.props.onDragOver} onDrop={this.props.onDrop}>{this.props.letter}</span>
+        return <span id="field" onTouchEnd={this.props.onTouchEnd} onDragOver={this.props.onDragOver} onDrop={this.props.onDrop}>{this.props.letter}</span>
     }
 };
 
@@ -111,19 +111,19 @@ class Word extends React.Component{
         let newWord = [];
         for (let i of word){
             if (i == "_"){
-                newWord.push(<Field letter={this.props.letter} onDragOver={this.allowDrop} onDrop={(event)=>this.handleDrop(event, this.props.letter, this.props.onCorrect)}/>)
+                newWord.push(<Field letter={this.props.letter} onTouchEnd={this.handleTouchEnd} onDragOver={this.allowDrop} onDrop={(event)=>this.handleDrop(event, this.props.letter, this.props.onCorrect)}/>)
             } else {
                 newWord.push(i)
             };
         };
         word = newWord
-        return <div className="word item">{word}</div>
+        return <div id="word">{word}</div>
     }
 };
 
 class Choice extends React.Component{
     render(){
-        return <span id={this.props.id} draggable={true} onDragStart={this.props.onDragStart} className="choice">{this.props.choice}</span>
+        return <span id={this.props.id} draggable={true} onDragStart={this.props.onDragStart}>{this.props.choice}</span>
     };
 };
 
@@ -131,6 +131,7 @@ class Choices extends React.Component{
     handleDrag(event) {
         event.dataTransfer.setData("text", event.target.id);
     };
+
     render(){
         let choices = [this.props.letter];
         let tempAlphabet = [];
@@ -156,7 +157,7 @@ class Choices extends React.Component{
             [choices[i], choices[j]] = [choices[j], choices[i]];
         };
         //console.log(choices);
-    return <div className="item">
+    return <div id="choices">
             <Choice onDragStart={this.handleDrag} choice={choices[0]} id="choice1"/> &nbsp; 
             <Choice onDragStart={this.handleDrag} choice={choices[1]} id="choice2"/> &nbsp;
             <Choice onDragStart={this.handleDrag} choice={choices[2]} id="choice3"/> &nbsp;
@@ -171,18 +172,18 @@ class Quiz extends React.Component {
         let randWordIndex = Math.floor(Math.random() * words.length);
         let randWord = words[randWordIndex];
         //console.log(randWord);
-        while(lastThree.includes(randWord)){
+        while(lastN.includes(randWord)){
             randWordIndex = Math.floor(Math.random() * words.length);
             randWord = words[randWordIndex];
             //console.log(randWord);
         };
-        if (lastThree.length<3){
-            lastThree.unshift(randWord);
+        if (lastN.length<5){
+            lastN.unshift(randWord);
         } else {
-            lastThree.pop();
-            lastThree.unshift(randWord);
+            lastN.pop();
+            lastN.unshift(randWord);
         };
-        //console.log(lastThree);
+        //console.log(lastN);
         return randWord;
     };
     state = {
@@ -194,11 +195,11 @@ class Quiz extends React.Component {
         )
     };
     render() {
-        return (<div className="container horizontal main">
-            <div className="container horizontal picture">
+        return (<div id="main" className="container horizontal">
+            <div id="picture" className="container horizontal">
                 <img src={"assets/"+this.state.main.word + ".png" || null} alt={this.state.main.word}></img>
             </div>
-            <div className="container vertical quiz">
+            <div id="quiz" className="container vertical">
                 <Choices letter={this.state.main.letter} />
                 <Word className="item" word={this.state.main.word} letter={this.state.main.letter} onCorrect={this.newQuiz}/>
             </div>
